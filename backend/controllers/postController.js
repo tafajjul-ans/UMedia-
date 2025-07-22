@@ -1,21 +1,22 @@
-const Post = require('../models/Post');
+const cloudinary = require('../utils/cloudinary');
 
 exports.createPost = async (req, res) => {
   try {
     const { image, caption, userId } = req.body;
-    const newPost = await Post.create({ image, caption, user: userId });
+    
+    // Upload image to Cloudinary
+    const uploadResponse = await cloudinary.uploader.upload(image, {
+      upload_preset: 'ml_default',
+    });
+
+    const newPost = await Post.create({
+      image: uploadResponse.secure_url,
+      caption,
+      user: userId,
+    });
+
     res.status(201).json(newPost);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
-};
-
-exports.getFeed = async (req, res) => {
-  const posts = await Post.find().populate('user').sort({ createdAt: -1 });
-  res.json(posts);
-};
-
-exports.getUserPosts = async (req, res) => {
-  const posts = await Post.find({ user: req.params.id }).sort({ createdAt: -1 });
-  res.json(posts);
 };
