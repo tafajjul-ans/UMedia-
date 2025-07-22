@@ -1,17 +1,15 @@
-const express = require('express');
-const cors = require('cors');
-const cookieParser = require('cookie-parser');
-require('dotenv').config();
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import RegisterPage from './pages/RegisterPage';
+import LoginPage from './pages/LoginPage';
 
-const userRoutes = require('./routes/userRoutes');
-const postRoutes = require('./routes/postRoutes');
-
-const app = express();
-
-app.use(cors({ origin: true, credentials: true }));
-app.use(express.json());
-app.use(cookieParser());
-app.use('/api/users', userRoutes);
-app.use('/api/posts', postRoutes);
-
-module.exports = app;
+export default function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/login" element={<LoginPage />} />
+      </Routes>
+    </Router>
+  );
+}
